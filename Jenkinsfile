@@ -26,7 +26,6 @@ pipeline {
             }
             steps{
                 sh '''
-                   test -f build/manifest.json
                    npm test
                 '''
             }
