@@ -11,9 +11,10 @@ pipeline {
             }
             steps {
                 sh '''
-                    rm -rf node_modules
-                    npm cache clean --force
-                    npm ci
+                    ls -la
+                    node --version
+                    npm --version
+                    npm run build
                     
                 '''
             }
@@ -28,6 +29,21 @@ pipeline {
             steps{
                 sh '''
                    echo Testing done
+                '''
+            }
+        }
+        stage ('E2E'){
+            agent {
+                docker {
+                    image 'docker pull mcr.microsoft.com/playwright:v1.56.1-noble'
+                    reuseNode true
+                }
+            }
+            steps{
+                sh '''
+                   sudo npm install -g serve
+                   serve -s build
+                   npx playwright test
                 '''
             }
         }
