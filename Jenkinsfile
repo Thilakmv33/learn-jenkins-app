@@ -41,7 +41,7 @@ pipeline {
             }
             steps{
                 sh '''
-                   sudo npm install serve
+                   npm install serve
                    node_modules/.bin/serve -s build
                    npx playwright test
                 '''
