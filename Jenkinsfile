@@ -41,6 +41,7 @@ pipeline {
             }
             steps{
                 sh '''
+                   sudo chown -R 122:124 "/.npm"
                    npm install serve
                    node_modules/.bin/serve -s build
                    npx playwright test
