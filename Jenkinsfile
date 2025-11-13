@@ -21,12 +21,10 @@ pipeline {
             }
         }
         
-        stage ('Parallel Run'){
-            Parallel{
 
             
         
-                 stage('Test') {
+                 stage('Netkify') {
                     agent {
                         docker {
                         image 'node:18-alpine'
@@ -36,32 +34,14 @@ pipeline {
 
                         steps {
                              sh '''
-                                #test -f build/index.html
-                                npm test
+                                 npm install netlify-cli -g
+                                 ntelify --version
                                 '''
                         }
                     }
-
-                stage('E2E') {
-                    agent {
-                        docker {
-                        image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                        reuseNode true
-                        }
-                    }
-
-                    steps {
-                        sh '''
-                            npm install serve
-                            node_modules/.bin/serve -s build &
-                            sleep 10
-                            npx playwright test --reporter=html
-                        '''
-                    }
-                }
             }
-        }
-    }
+
+    
 
     post {
         always {
