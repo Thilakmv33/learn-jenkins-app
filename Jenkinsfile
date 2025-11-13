@@ -27,18 +27,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    # Create writable npm directories
-                    mkdir -p /tmp/npm-global
-                    npm config set prefix /tmp/npm-global
-                    npm config set cache /tmp/.npm-cache --global
-
-                    # Install Netlify CLI globally (in /tmp)
-                    npm install -g netlify-cli
-
-                    # Add the npm global bin to PATH
-                    export PATH=/tmp/npm-global/bin:$PATH
-
-                    # Verify installation
+                    npm install netlify-cli
                     netlify --version
                 '''
             }
