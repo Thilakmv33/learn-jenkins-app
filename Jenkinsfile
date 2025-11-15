@@ -27,7 +27,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    npm install netlify-cli
+                    npm install netlify-cli@23.9.5
                     netlify --version
                 '''
             }
