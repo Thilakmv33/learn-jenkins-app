@@ -19,19 +19,22 @@ pipeline {
         }
 
         stage('Netlify') {
-            steps {
-                 withDockerContainer(image: 'node:18-alpine', args: '-u 122:124') 
-                    {
-                       sh '''
-                          npm config set cache /var/lib/jenkins/workspace/Learn-jenkins-Pipeline/.npm --global
-                          mkdir -p /var/lib/jenkins/workspace/Learn-jenkins-Pipeline/.npm
-                          chown -R 122:124 /var/lib/jenkins/workspace/Learn-jenkins-Pipeline/.npm
-                          npm install
-                          npm run build
-                          '''
-                    }
-            }
+    steps {
+        withDockerContainer(image: 'node:18-alpine', args: '-u 122:124') {
+            sh '''
+                # Create project-local npm cache directory
+                mkdir -p /var/lib/jenkins/workspace/Learn-jenkins-Pipeline/.npm
+
+                # Set npm cache locally (NOT globally)
+                npm config set cache /var/lib/jenkins/workspace/Learn-jenkins-Pipeline/.npm
+
+                # Install dependencies
+                npm install
+            '''
         }
+    }
+}
+
 
     }
 
