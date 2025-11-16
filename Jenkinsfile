@@ -27,6 +27,10 @@ pipeline {
             }
             steps {
                 sh '''
+                    npm config get cache
+                    npm config get prefix
+                    ls -ld /
+                    ls -ld /.npm
                     npm install netlify-cli@23.9.5
                     netlify --version
                 '''
