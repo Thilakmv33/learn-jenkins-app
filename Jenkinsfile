@@ -19,23 +19,20 @@ pipeline {
         }
 
         stage('Netlify') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
             steps {
-                sh '''
-                    npm config get cache
-                    npm config get prefix
-                    ls -ld /
-                    ls -ld /.npm
-                    npm install netlify-cli@23.9.5
-                    netlify --version
-                '''
+                 withDockerContainer(image: 'node:18-alpine', args: '-u 122:124') 
+                    {
+                       sh '''
+                          npm config set cache /var/lib/jenkins/workspace/Learn-jenkins-Pipeline/.npm --global
+                          mkdir -p /var/lib/jenkins/workspace/Learn-jenkins-Pipeline/.npm
+                          chown -R 122:124 /var/lib/jenkins/workspace/Learn-jenkins-Pipeline/.npm
+                          npm install
+                          npm run build
+                          '''
+                    }
             }
         }
+
     }
 
     post {
