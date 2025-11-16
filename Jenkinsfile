@@ -1,41 +1,51 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:18-alpine'
+            args '-u 122:124'          // Use same user in ALL stages
+            reuseNode true
+        }
+    }
 
     stages {
+
         stage('Build') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
             steps {
                 sh '''
-                    ls -la
+                    cd $WORKSPACE
+
+                    # Fix ownership
+                    chown -R 122:124 .
+
                     node --version
                     npm --version
+                    ls -la
                 '''
             }
         }
 
         stage('Netlify') {
-    steps {
-        withDockerContainer(image: 'node:18-alpine', args: '-u 122:124') {
-            sh '''
-                # Create project-local npm cache directory
-                mkdir -p /var/lib/jenkins/workspace/Learn-jenkins-Pipeline/.npm
+            steps {
+                sh '''
+                    cd $WORKSPACE
 
-                # Set npm cache locally (NOT globally)
-                npm config set cache /var/lib/jenkins/workspace/Learn-jenkins-Pipeline/.npm
+                    # Fix workspace permissions
+                    chown -R 122:124 .
 
-                # Install dependencies
-                npm install
-            '''
+                    # Create local npm cache
+                    mkdir -p .npm
+
+                    # Set npm cache (LOCAL -- not global)
+                    npm config set cache $(pwd)/.npm
+
+                    # Install dependencies
+                    npm install
+
+                    # Run your build or publish steps
+                    # npm run build
+                '''
+            }
         }
-    }
-}
-
-
     }
 
     post {
