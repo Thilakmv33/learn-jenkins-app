@@ -44,6 +44,7 @@ pipeline {
 
                     echo "===== INSTALLING DEPENDENCIES ====="
                     npm install
+                    npm audit fix
 
                     # If you want to build:
                     # npm run build
